@@ -88,7 +88,7 @@ public class RabbitMQSource implements Source {
 		Long epochTime = jsonMsg.getLong(0, "meta", "time");
 		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int)(epochTime % 1000) * 1000000, ZoneOffset.UTC);
 		PatchSet ps = new PatchSet(jsonMsg.getString("", "meta", "id"), timeStamp.toString());
-		JsonObject jsonCommit = persistenceLayer.fetchOne("commits", changeId);
+		JsonObject jsonCommit = persistenceLayer.fetchOneWithId("commits", changeId);
 		Commit commit;
 		
 		if(jsonCommit != null) {

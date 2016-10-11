@@ -83,7 +83,7 @@ public class CommitPage extends BasePage {
 		} else if(notApproved.contains(cr)) {
 			return "Not approved";
 		}
-		return "Not yet reviewed";
+		return "Not reviewed";
 	}
 
 	private AttributeAppender getCodeReviewStyle(String cr) {
@@ -101,7 +101,7 @@ public class CommitPage extends BasePage {
 		} else if(notVerified.contains(v)) {
 			return "Verification failed";
 		}
-		return "Not yet verified";
+		return "Not verified";
 	}
 	
 	private AttributeAppender getVerifiedStyle(String v) {
