@@ -1,0 +1,55 @@
+# Compiled source #
+*.class
+*/bin/*
+
+# Eclipse files
+.project
+.classpath
+.settings
+.metadata
+
+
+# Packages
+*.jar
+
+# Python files
+*.pyc
+*.swp
+
+# Test output files
+*/test-output/*
+/test-output/
+/test-output
+test-output/
+test-output/**/*
+*/test-output/**/*
+target/
+target/**/*
+*/target/**/*
+tmp/
+tmp/**/*
+*/tmp/**/*
+
+# Maven build files
+target
+reports
+# ARQ tests
+arq-perf
+
+# PMD
+.pmd
+
+# Merge files
+*.orig
+
+# Windows binaries
+*.exe
+*.dll
+
+# Erlang derived files
+*.beam
+*.app
+
+# Intellij Files
+.idea/
+*.iml
