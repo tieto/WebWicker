@@ -146,6 +146,10 @@ public class Commit implements Model {
 		return workItems;
 	}
 	
+	public void clearWorkItems() {
+		workItems.clear();
+	}
+	
 	public void addWorkItem(final WorkItem workItem) {
 		workItems.add(workItem);
 	}

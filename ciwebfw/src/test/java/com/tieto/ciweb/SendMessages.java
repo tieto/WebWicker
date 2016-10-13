@@ -1,85 +1,92 @@
 package com.tieto.ciweb;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
-
-import org.apache.wicket.util.file.File;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class SendMessages {
-	public static final String REMREM_PUBLISH_CLI_PATH = System.getProperty("user.home")+File.separator+"eiffel-remrem-publish.war";
+	//public static final String REMREM_PUBLISH_CLI_PATH = System.getProperty("user.home")+File.separator+"eiffel-remrem-publish.war";
+	public static final String REMREM_PUBLISH_CLI_PATH = "C:\\Users\\olssodan\\git\\duraci\\eiffel-remrem-publish\\build\\libs\\remrem-publish-0.1.7.war";
 
-	public static long time = 1473152884011L;
+	public static long time = new Date().getTime() - 100000L;
 
 	public static void main(String[] args) throws IOException {
 		JsonArray messages = new JsonArray();
 
 		JsonArray batch1 = new JsonArray();
-		batch1.add(generateChangeCreatedMessage("John Doe", "221547", "master", "common"));
+		batch1.add(generateChangeCreatedMessage("John Doe", "221547", "master", "common", "STORY-0103", "STORY-0106"));
 		batch1.add(generateConfidenceLevelMessage(batch1.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch1.add(generateConfidenceLevelMessage(batch1.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
 		batch1.add(generateChangeSubmittedMessage(batch1.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString()));
 
 		JsonArray batch2 = new JsonArray();
-		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage"));
+		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage", "BUG-0034"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
-		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage"));
+		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage", "BUG-0034"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(2).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
-		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage"));
+		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage", "BUG-0034"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(4).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
-		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage"));
+		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage", "BUG-0034"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(6).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(6).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "-1"));
-		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage"));
+		batch2.add(generateChangeCreatedMessage("Bob Smith", "837230", "master", "storage", "BUG-0034"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(9).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch2.add(generateConfidenceLevelMessage(batch2.get(9).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
 		batch2.add(generateChangeSubmittedMessage(batch2.get(9).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString()));
 
 		JsonArray batch3 = new JsonArray();
-		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common"));
+		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common", "BUG-0034"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
-		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common"));
+		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common", "BUG-0034"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(2).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(2).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "-2"));
-		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common"));
+		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common", "BUG-0034", "BUG-0036"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(5).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(5).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "-2"));
-		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common"));
+		batch3.add(generateChangeCreatedMessage("Alice Cooper", "328338", "master", "common", "BUG-0034", "BUG-0036"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(8).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch3.add(generateConfidenceLevelMessage(batch3.get(8).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
 		batch3.add(generateChangeSubmittedMessage(batch3.get(8).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString()));
 
 		JsonArray batch4 = new JsonArray();
-		batch4.add(generateChangeCreatedMessage("Danny Brown", "123456", "dev-test", "common"));
+		batch4.add(generateChangeCreatedMessage("Danny Brown", "123456", "dev-test", "common", "STORY-1001"));
 		batch4.add(generateConfidenceLevelMessage(batch4.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 
 		JsonArray batch5 = new JsonArray();
-		batch5.add(generateChangeCreatedMessage("Susan Kelly", "924302", "master", "service"));
+		batch5.add(generateChangeCreatedMessage("Susan Kelly", "924302", "master", "service", "STORY-2005"));
 		batch5.add(generateConfidenceLevelMessage(batch5.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
 		batch5.add(generateChangeCreatedMessage("Susan Kelly", "924302", "master", "service"));
 		batch5.add(generateConfidenceLevelMessage(batch5.get(2).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 
 		JsonArray batch6 = new JsonArray();
-		batch6.add(generateChangeCreatedMessage("Bob Smith", "434578", "master", "storage"));
+		batch6.add(generateChangeCreatedMessage("Bob Smith", "434578", "master", "storage", "STORY-0023", "STORY-0024", "STORY-0025"));
 		batch6.add(generateConfidenceLevelMessage(batch6.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
 		batch6.add(generateConfidenceLevelMessage(batch6.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "-2"));
 
 		JsonArray batch7 = new JsonArray();
-		batch7.add(generateChangeCreatedMessage("John Doe", "982143", "legacy-branch", "common"));
+		batch7.add(generateChangeCreatedMessage("John Doe", "982143", "legacy-branch", "common", "BUG-0001"));
 		batch7.add(generateConfidenceLevelMessage(batch7.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "-1"));
 		batch7.add(generateConfidenceLevelMessage(batch7.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
 
 		JsonArray batch8 = new JsonArray();
-		batch8.add(generateChangeCreatedMessage("Eric Garrison", "358372", "master", "common"));
+		batch8.add(generateChangeCreatedMessage("Eric Garrison", "358372", "master", "common", "STORY-0837", "BUG-0101"));
 		batch8.add(generateConfidenceLevelMessage(batch8.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 		batch8.add(generateConfidenceLevelMessage(batch8.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
 
 		JsonArray batch9 = new JsonArray();
-		batch9.add(generateChangeCreatedMessage("Gary Johnson", "985733", "master", "storage"));
+		batch9.add(generateChangeCreatedMessage("Gary Johnson", "985733", "master", "storage", "STORY-0635"));
 		batch9.add(generateConfidenceLevelMessage(batch9.get(0).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "CODE_REVIEW", "+2"));
+
+		JsonArray batch10 = new JsonArray();
+		batch10.add(generateChangeCreatedMessage("Susan Kelly", "245646", "test-branch", "service", "BUG-0100"));
+		batch10.add(generateChangeCreatedMessage("Susan Kelly", "245646", "test-branch", "service", "BUG-0100", "BUG-0101"));
+		batch10.add(generateChangeCreatedMessage("Susan Kelly", "245646", "test-branch", "service", "BUG-0100", "BUG-0101", "BUG-0102"));
+		batch10.add(generateChangeCreatedMessage("Susan Kelly", "245646", "test-branch", "service", "BUG-0100", "BUG-0101", "BUG-0102", "BUG-0103"));
+		batch10.add(generateConfidenceLevelMessage(batch10.get(3).getAsJsonObject().getAsJsonObject("meta").get("id").getAsString(), "VERIFIED", "+1"));
 
 		messages.addAll(batch1);
 		messages.addAll(batch2);
@@ -90,11 +97,12 @@ public class SendMessages {
 		messages.addAll(batch7);
 		messages.addAll(batch8);
 		messages.addAll(batch9);
+		messages.addAll(batch10);
 
 		sendMessages(messages);
 	}
 
-	private static void sendMessages(JsonArray messages) {
+	private static void sendMessages(JsonArray messages) throws IOException {
 		for(JsonElement message : messages) {
 			try {
 				String json = message.toString().replace("\"", "\\\"");
@@ -119,7 +127,7 @@ public class SendMessages {
 		}
 	}
 
-	private static JsonObject generateChangeCreatedMessage(String userName, String changeId, String branch, String project) {
+	private static JsonObject generateChangeCreatedMessage(String userName, String changeId, String branch, String project, String ... workItems) {
 		JsonObject message = new JsonObject();
 		message.add("meta", generateMetaTag("EiffelSourceChangeCreatedEvent"));
 
@@ -139,10 +147,18 @@ public class SendMessages {
 		gitIdentifier.addProperty("branch", branch);
 		gitIdentifier.addProperty("repoUri", "https://repo.com");
 		gitIdentifier.addProperty("repoName", project);
+		
+		JsonArray issues = new JsonArray();
+		for(String workItem : workItems) {
+			JsonObject issue = new JsonObject();
+			issue.addProperty("id", workItem);
+			issues.add(issue);
+		}
 
 		data.add("change", change);
 		data.add("author", author);
 		data.add("gitIdentifier", gitIdentifier);
+		data.add("issues", issues);
 
 		message.add("data", data);
 

@@ -21,6 +21,7 @@ import com.tieto.ciweb.api.source.Source;
 import com.tieto.ciweb.lib.json.ExtJsonElement;
 import com.tieto.ciweb.model.Commit;
 import com.tieto.ciweb.model.PatchSet;
+import com.tieto.ciweb.model.WorkItem;
 
 public class RabbitMQSource implements Source {
 	private static final String EXCHANGE_NAME = "eiffel.poc";
@@ -102,7 +103,12 @@ public class RabbitMQSource implements Source {
 			String branch = jsonMsg.getString("", "data", "gitIdentifier", "branch");
 			commit = new Commit(changeId, author, authorId, team, project, branch, timeStamp.toString());
 		}
-		
+
+		commit.clearWorkItems();
+		for(JsonElement issue : jsonMsg.getJsonArray("data", "issues")) {
+			commit.addWorkItem(new WorkItem(issue.getAsJsonObject().get("id").getAsString(), ""));
+		}
+
 		commit.addPatchSet(ps);
 		
 		persistenceLayer.store("commits", commit.toJson(), changeId);
