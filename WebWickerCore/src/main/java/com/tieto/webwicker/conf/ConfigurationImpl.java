@@ -13,8 +13,9 @@ import com.tieto.webwicker.api.persistence.PersistenceLayer;
 import com.tieto.webwicker.api.web.WebWickerPageFactory;
 
 public class ConfigurationImpl implements Configuration {
-	
-	private PersistenceLayer persistenceLayer = null;
+	private static final long serialVersionUID = -9145343387139913935L;
+
+	private transient PersistenceLayer persistenceLayer = null;
 	private final Map<String, WebWickerPageFactory> pageFactories;
 	private WebWickerPageFactory homePageFactory;
 	private WebWickerPageFactory errorPageFactory;
@@ -86,5 +87,10 @@ public class ConfigurationImpl implements Configuration {
 			}
 		});
 		return topPages;
+	}
+
+	@Override
+	public WebWickerPageFactory getHomePageFactory() {
+		return homePageFactory;
 	}
 }

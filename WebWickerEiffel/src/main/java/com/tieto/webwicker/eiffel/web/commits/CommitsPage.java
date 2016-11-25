@@ -43,7 +43,7 @@ public class CommitsPage extends WebWickerPage {
 			@SuppressWarnings("rawtypes")
 			public void populateItem(Item cellItem, String componentId, IModel model) {
 				final Commit commit = (Commit)model.getObject();
-				cellItem.add(new LinkPanel<Commit>(componentId, commit.getChangeId(), commit.getChangeId(), CommitPage.class));
+				cellItem.add(new LinkPanel<Commit>(configuration, componentId, commit.getChangeId(), commit.getChangeId(), CommitPage.class));
 			}
         });
         columns.add(new PropertyColumn<Commit, String>(new Model<String>("Author"), "author", "author"));

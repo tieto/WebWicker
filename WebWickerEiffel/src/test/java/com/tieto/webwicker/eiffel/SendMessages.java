@@ -1,4 +1,4 @@
-package com.tieto.ciweb;
+package com.tieto.webwicker.eiffel;
 
 import java.io.IOException;
 import java.util.Date;

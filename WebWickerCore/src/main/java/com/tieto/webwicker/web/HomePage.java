@@ -16,6 +16,7 @@ import com.tieto.webwicker.api.web.WebWickerPageFactory;
 
 public class HomePage extends WebPage {
 	private static final long serialVersionUID = -7626368252793216083L;
+	private final Configuration configuration;
 	private List<WebWickerPageFactory> subPages;
 	
 	public static final int ORDER = 0;
@@ -24,7 +25,7 @@ public class HomePage extends WebPage {
 	public HomePage(final PageParameters parameters) {
 		super(parameters);
 		
-		Configuration configuration = WebWickerApplication.get().getConfiguration();
+		configuration = WebWickerApplication.get().getConfiguration();
 		
 		RepeatingView listItems = new RepeatingView("listItems");
 		subPages = configuration.getTopPageFactories();
@@ -48,7 +49,7 @@ public class HomePage extends WebPage {
 	
 	private boolean pageMatchesLink(final String page, final String name) {
 		if(page == null) {
-			return "Home".equals(name);
+			return StartPage.class.getName().equals(name);
 		}
 		return page.equals(name);
 	}
