@@ -20,7 +20,7 @@ import com.tieto.webwicker.eiffel.model.Commit;
 public class CommitProvider extends Provider<Commit> {
 	private static final long serialVersionUID = -3567151657699169406L;
 	
-	private final transient PersistenceLayer persistanceLayer;
+	private final PersistenceLayer persistanceLayer;
 	
 	public CommitProvider(Configuration configuration) {
 		persistanceLayer = configuration.getPersistenceLayer();

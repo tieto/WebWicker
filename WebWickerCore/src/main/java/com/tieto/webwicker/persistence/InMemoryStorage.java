@@ -2,12 +2,9 @@ package com.tieto.webwicker.persistence;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import com.google.gson.JsonObject;
 import com.tieto.webwicker.api.conf.Configuration;
 import com.tieto.webwicker.api.persistence.PersistenceLayer;
@@ -15,32 +12,34 @@ import com.tieto.webwicker.api.persistence.PersistenceLayerFactory;
 import com.tieto.webwicker.lib.json.ExtJsonElement;
 
 public class InMemoryStorage implements PersistenceLayer {
-	private final Map<String,Map<String,JsonObject>> collections;
-	
+	private static final long serialVersionUID = -3783750252261255831L;
+
 	public InMemoryStorage() {
-		collections = new HashMap<>();
 	}
 
 	@Override
 	public void store(String collection, JsonObject object, String id) {
-		if(!collections.containsKey(collection)) {
-			collections.put(collection, new LinkedHashMap<>());
+		InMemoryDB db = InMemoryDB.getInstance();
+		if(!db.collections().containsKey(collection)) {
+			db.collections().put(collection, new LinkedHashMap<>());
 		}
-		collections.get(collection).put(id, object);
+		db.collections().get(collection).put(id, object);
 	}
 	
 	@Override
 	public JsonObject fetchOneWithId(String collection, String id) {
-		return collections.containsKey(collection) ? collections.get(collection).get(id) : null;
+		InMemoryDB db = InMemoryDB.getInstance();
+		return db.collections().containsKey(collection) ? db.collections().get(collection).get(id) : null;
 	}
 
 	@Override
 	public JsonObject fetchOne(String collection, String query) {
-		if(collections.containsKey(collection) && query.contains("=")) {
+		InMemoryDB db = InMemoryDB.getInstance();
+		if(db.collections().containsKey(collection) && query.contains("=")) {
 			String path = query.substring(0, query.indexOf("="));
 			String value = query.substring(query.indexOf("=")+1);
 			
-			for(JsonObject obj : collections.get(collection).values()) {
+			for(JsonObject obj : db.collections().get(collection).values()) {
 				if(ExtJsonElement.match(new ExtJsonElement(obj), path, value)) {
 					return obj;
 				}
@@ -51,7 +50,8 @@ public class InMemoryStorage implements PersistenceLayer {
 	
 	@Override
 	public List<JsonObject> fetchMany(final String collection, final String sortBy, final boolean sortAscending, final String query) {
-		List<JsonObject> result = collections.containsKey(collection) ? new LinkedList<>(collections.get(collection).values()) : Collections.emptyList();
+		InMemoryDB db = InMemoryDB.getInstance();
+		List<JsonObject> result = db.collections().containsKey(collection) ? new LinkedList<>(db.collections().get(collection).values()) : Collections.emptyList();
 		Collections.sort(result, new Comparator<JsonObject>() {
 			@Override
 			public int compare(JsonObject o1, JsonObject o2) {
@@ -66,7 +66,8 @@ public class InMemoryStorage implements PersistenceLayer {
 
 	@Override
 	public long count(String collection, String query) {
-		return collections.containsKey(collection) ? collections.get(collection).size() : 0;
+		InMemoryDB db = InMemoryDB.getInstance();
+		return db.collections().containsKey(collection) ? db.collections().get(collection).size() : 0;
 	}
 	
 	public static class InMemoryStorageFactory extends PersistenceLayerFactory {

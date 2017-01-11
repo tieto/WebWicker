@@ -74,6 +74,10 @@ public class Commit implements Model {
 	public String getCreated() {
 		return created;
 	}
+	
+	public int getNumberOfPatchSets() {
+		return patchSets.size();
+	}
 
 	public PatchSet getLatestPatchSet() {
 		return latestPatchSet;

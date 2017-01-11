@@ -1,10 +1,11 @@
 package com.tieto.webwicker.api.persistence;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.gson.JsonObject;
 
-public interface PersistenceLayer {
+public interface PersistenceLayer extends Serializable {
 	void store(String collection, JsonObject object, String id);
 	
 	JsonObject fetchOneWithId(String collection, String id);

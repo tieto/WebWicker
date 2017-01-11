@@ -3,14 +3,24 @@ package com.tieto.webwicker.eiffel.web.commits;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.event.IEvent;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.time.Duration;
 
 import ro.fortsoft.pf4j.Extension;
 
@@ -29,46 +39,126 @@ public class CommitPage extends WebWickerPage {
 	private static final List<String> notApproved = Arrays.asList(new String[]{"-1","-2"});
 	private static final List<String> verified = Arrays.asList(new String[]{"+1"});
 	private static final List<String> notVerified = Arrays.asList(new String[]{"-1"});
-
+	
+	private final String commitId;
+	private final CommitProvider commitProvider;
+	private final ListView<WorkItem> workItemView;
+	private final ListView<PatchSet> patchSetView;
+	private final WebMarkupContainer verifiedNode;
+	private final WebMarkupContainer codeReviewNode;
+	private final WebMarkupContainer submitNode;
+	
+	private CommitModel model;
+	
 	@SuppressWarnings({"serial", "rawtypes"})
 	public CommitPage(String id, PageParameters parameters, Configuration configuration) {
 		super(id);
 		
-		final String commitId = parameters.get("id").toString("");
-		final CommitProvider commitProvider = new CommitProvider(configuration);
+		commitProvider = new CommitProvider(configuration);
+		commitId = parameters.get("id").toString("");
+
 		final Commit commit = commitProvider.getInstance(commitId);
 		
-		final String codeReview = commit.getLatestPatchSet().getCodeReviewed();
-		final String verified = commit.getLatestPatchSet().getVerified();
-		final String merged = commit.getLatestPatchSet().getMerged();
+		model = new CommitModel();
+		model.setObject(commit);
 		
-		add(new Label("author", commit == null ? "-" : commit.getAuthor()));
-		add(new Label("team", commit == null ? "-" : commit.getTeam()));
-		add(new Label("changeId", commit == null ? "-" : commit.getChangeId()));
-		add(new Label("project", commit == null ? "-" : commit.getProject()));
-		add(new Label("branch", commit == null ? "-" : commit.getBranch()));
-		add(new Label("created", commit == null ? "-" : commit.getCreated()));
-		add(new Label("updated", commit == null ? "-" : commit.getLatestPatchSet().getUpdated()));
-		add(new Label("currentPatchset", commit == null ? "-" : commit.getPatchSets().size()));
-		add(new Label("verified", commit == null ? "-" : getVerifiedString(verified)).add(getVerifiedStyle(verified)));
-		add(new Label("codeReview", commit == null ? "-" : getCodeReviewString(codeReview)).add(getCodeReviewStyle(codeReview)));
-		add(new Label("merged", commit == null ? "-" : merged).add(getMergedStyle(merged)));
+		add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+		
+		verifiedNode = new WebMarkupContainer("verifiedNode");
+		codeReviewNode = new WebMarkupContainer("codeReviewNode");
+		submitNode = new WebMarkupContainer("submitNode");
+		
+		add(verifiedNode);
+		add(codeReviewNode);
+		add(submitNode);
 
-	   	add(new ListView<WorkItem>("workItems", commit.getWorkItems()) {
+        Map<String, IModel<Commit>> modelMap = new LinkedHashMap<>();
+        modelMap.put("author", new PropertyModel<Commit>(model, "author"));
+        modelMap.put("team", new PropertyModel<Commit>(model, "team"));
+        modelMap.put("changeId", new PropertyModel<Commit>(model, "changeId"));
+        modelMap.put("project", new PropertyModel<Commit>(model, "project"));
+        modelMap.put("branch", new PropertyModel<Commit>(model, "branch"));
+		modelMap.put("created", new PropertyModel<Commit>(model, "created"));
+		modelMap.put("updated", new PropertyModel<Commit>(model, "latestPatchSet.updated"));
+		modelMap.put("currentPatchset", new PropertyModel<Commit>(model, "numberOfPatchSets"));
+		modelMap.put("verified", new PropertyModel<Commit>(model, "latestPatchSet.verified"));
+		modelMap.put("codeReview", new PropertyModel<Commit>(model, "latestPatchSet.codeReviewed"));
+		modelMap.put("merged", new PropertyModel<Commit>(model, "latestPatchSet.merged"));
+		modelMap.put("currentPatchsetGraph", modelMap.get("currentPatchset"));
+		modelMap.put("verifiedGraph", modelMap.get("verified"));
+		modelMap.put("codeReviewGraph", modelMap.get("codeReview"));
+        
+		for(String key : modelMap.keySet()) {
+			if(key.startsWith("verified")) {
+				add(new Label(key, modelMap.get(key)) {
+					@Override
+				    public <C> IConverter<C> getConverter(Class<C> type) {
+						return new IConverter<C>() {
+							public String convertToString(C value, Locale locale) {
+								if(null == value) return null;
+								return getVerifiedString(value.toString());
+							}
+							public C convertToObject(String value, Locale locale)
+							{
+								throw new UnsupportedOperationException();
+							}
+						};
+					}			
+				});
+			} else if(key.startsWith("codeReview")) {
+				add(new Label(key, modelMap.get(key)) {
+					@Override
+				    public <C> IConverter<C> getConverter(Class<C> type) {
+						return new IConverter<C>() {
+							public String convertToString(C value, Locale locale) {
+								if(null == value) return null;
+								return getCodeReviewString(value.toString());
+							}
+							public C convertToObject(String value, Locale locale)
+							{
+								throw new UnsupportedOperationException();
+							}
+						};
+					}			
+				});
+			} else if(key.equals("currentPatchsetGraph")) {
+				add(new Label(key, modelMap.get(key)) {
+					@Override
+				    public <C> IConverter<C> getConverter(Class<C> type) {
+						return new IConverter<C>() {
+							public String convertToString(C value, Locale locale) {
+								if(null == value) return null;
+								return "Patchset "+value.toString();
+							}
+							public C convertToObject(String value, Locale locale)
+							{
+								throw new UnsupportedOperationException();
+							}
+						};
+					}			
+				});
+			} else {
+				add(new Label(key, modelMap.get(key)));
+			}
+		}
+		
+		workItemView = new ListView<WorkItem>("workItems", model.getObject().getWorkItems()) {
 			@Override
 			protected void populateItem(ListItem<WorkItem> item) {
 		   		item.add(new Label("workItem", new PropertyModel(item.getModel(), "itemId")));
 			}			
-		});
+		};
+		
+		add(workItemView);
 
-	   	final List<PatchSet> patchSets = new ArrayList<>(commit.getPatchSets());
+	   	final List<PatchSet> patchSets = new ArrayList<>(model.getObject().getPatchSets());
 	   	Collections.reverse(patchSets);
 	   	patchSets.remove(0);
 	   	
-	   	add(new ListView<PatchSet>("patchSets", patchSets) {
+	   	patchSetView = new ListView<PatchSet>("patchSets", patchSets) {
 			@Override
 			protected void populateItem(ListItem<PatchSet> item) {
-				int ps = patchSets.size() - patchSets.indexOf(item.getModel().getObject());
+				int ps = getList().size() - getList().indexOf(item.getModel().getObject());
 				String patchSet = "Patch set "+ps;
 				String verified = item.getModel().getObject().getVerified();
 				String codeReviewed = item.getModel().getObject().getCodeReviewed();
@@ -76,9 +166,57 @@ public class CommitPage extends WebWickerPage {
 		   		item.add(new Label("psVerified", getVerifiedString(verified)).add(getVerifiedStyle(verified)));
 		   		item.add(new Label("psCodeReview", getCodeReviewString(codeReviewed)).add(getCodeReviewStyle(codeReviewed)));
 			}
-	   	});
+	   	};
+	   	
+	   	updateNodeColors();
+	   	
+	   	add(patchSetView);
 	}
 	
+	private void updateNodeColors() {
+		final String verified = model.getObject().getLatestPatchSet().getVerified();
+		final String codeReview = model.getObject().getLatestPatchSet().getCodeReviewed();
+		final String merged = model.getObject().getLatestPatchSet().getMerged();
+
+		if(verified.startsWith("-")) {
+			verifiedNode.add(new AttributeModifier("fill", "#FFBBBB"));
+		} else if(verified.startsWith("+")) {
+			verifiedNode.add(new AttributeModifier("fill", "#BBFFBB"));
+		} else {
+			verifiedNode.add(new AttributeModifier("fill", "#BBBBBB"));
+		}
+		
+		if(codeReview.startsWith("-")) {
+			codeReviewNode.add(new AttributeModifier("fill", "#FFBBBB"));
+		} else if(codeReview.startsWith("+")) {
+			codeReviewNode.add(new AttributeModifier("fill", "#BBFFBB"));
+		} else {
+			codeReviewNode.add(new AttributeModifier("fill", "#BBBBBB"));
+		}
+
+		if(merged.equals("Yes")) {
+			submitNode.add(new AttributeModifier("fill", "#BBFFBB"));
+		} else {
+			submitNode.add(new AttributeModifier("fill", "#BBBBBB"));
+		}
+	}
+
+	@Override
+	public void onEvent(IEvent<?> event) {
+		final Commit commit = commitProvider.getInstance(commitId);
+		model.setObject(commit);
+
+		workItemView.setList(model.getObject().getWorkItems());
+		
+	   	final List<PatchSet> patchSets = new ArrayList<>(model.getObject().getPatchSets());
+	   	Collections.reverse(patchSets);
+	   	patchSets.remove(0);
+	   	
+	   	patchSetView.setList(patchSets);
+	   	
+	   	updateNodeColors();
+	}
+
 	private String getCodeReviewString(String cr) {
 		if(approved.contains(cr)) {
 			return "Approved";
@@ -89,7 +227,7 @@ public class CommitPage extends WebWickerPage {
 		}
 		return "Not reviewed";
 	}
-
+	
 	private AttributeAppender getCodeReviewStyle(String cr) {
 		if(approved.contains(cr)) {
 			return new AttributeAppender("style", "color:green");
@@ -115,13 +253,6 @@ public class CommitPage extends WebWickerPage {
 			return new AttributeAppender("style", "color:red");
 		}
 		return new AttributeAppender("style", "color:orange");
-	}
-	
-	private AttributeAppender getMergedStyle(String m) {
-		if("Yes".equalsIgnoreCase(m)) {
-			return new AttributeAppender("style", "color:green");
-		}
-		return new AttributeAppender("style", "color:red");
 	}
 	
 	@Extension
@@ -151,6 +282,25 @@ public class CommitPage extends WebWickerPage {
 		@Override
 		public String getPageClassName() {
 			return CommitPage.class.getName();
+		}
+	}
+	
+	private static class CommitModel implements IModel<Commit> {
+		private static final long serialVersionUID = -2580980548620301203L;
+		private Commit object = null;
+		
+		@Override
+		public void detach() {
+		}
+
+		@Override
+		public Commit getObject() {
+			return object;
+		}
+
+		@Override
+		public void setObject(Commit object) {
+			this.object = object;
 		}
 	}
 }

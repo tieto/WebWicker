@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -14,6 +15,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.time.Duration;
 
 import ro.fortsoft.pf4j.Extension;
 
@@ -91,9 +93,10 @@ public class CommitsPage extends WebWickerPage {
         columns.add(new PropertyColumn<Commit, String>(new Model<String>("Updated"), "updated", "latestPatchSet.updated"));
         
         DefaultDataTable<Commit,String> table = new DefaultDataTable<Commit,String>("datatable", columns, commitProvider, 20);
-         
+		table.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+        
         add(table);
-    }
+	}
 	
 	private String getCodeReviewString(String cr) {
 		if(approved.contains(cr)) {
