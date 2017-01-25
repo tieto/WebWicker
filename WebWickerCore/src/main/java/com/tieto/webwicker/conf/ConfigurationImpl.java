@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.WebPage;
 
 import com.tieto.webwicker.api.conf.Configuration;
+import com.tieto.webwicker.api.conf.Settings;
 import com.tieto.webwicker.api.persistence.PersistenceLayer;
 import com.tieto.webwicker.api.web.WebWickerPageFactory;
 
@@ -17,6 +18,7 @@ public class ConfigurationImpl implements Configuration {
 
 	private transient PersistenceLayer persistenceLayer = null;
 	private final Map<String, WebWickerPageFactory> pageFactories;
+	private final SettingsImpl settings;
 	private WebWickerPageFactory homePageFactory;
 	private WebWickerPageFactory errorPageFactory;
 	
@@ -24,6 +26,10 @@ public class ConfigurationImpl implements Configuration {
 	
 	public ConfigurationImpl() {
 		pageFactories = new HashMap<>();
+		settings = new SettingsImpl();
+		if(System.getProperties().containsKey("webwicker.settingsfile")) {
+			settings.readSettingsFromFile(System.getProperty("webwicker.settingsfile"));
+		}
 	}
 	
 	public void setPersistanceLayer(final PersistenceLayer persistanceLayer) {
@@ -32,10 +38,12 @@ public class ConfigurationImpl implements Configuration {
 		}
 	}
 	
+	@Override
 	public PersistenceLayer getPersistenceLayer() {
 		return persistenceLayer;
 	}
 
+	@Override
 	public WebWickerPageFactory getPageFactory(final String page) {
 		if(page == null) {
 			return homePageFactory;
@@ -63,10 +71,12 @@ public class ConfigurationImpl implements Configuration {
 		this.mainPageClass = mainPageClass;
 	}
 	
+	@Override
 	public Class<? extends WebPage> getMainPageClass() {
 		return mainPageClass;
 	}
 	
+	@Override
 	public List<WebWickerPageFactory> getTopPageFactories() {
 		List<WebWickerPageFactory> topPages = new LinkedList<>();
 		for(final WebWickerPageFactory factory : pageFactories.values()) {
@@ -92,5 +102,10 @@ public class ConfigurationImpl implements Configuration {
 	@Override
 	public WebWickerPageFactory getHomePageFactory() {
 		return homePageFactory;
+	}
+
+	@Override
+	public Settings getSettings() {
+		return settings;
 	}
 }

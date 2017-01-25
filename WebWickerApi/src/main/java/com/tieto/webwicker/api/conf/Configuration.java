@@ -20,4 +20,6 @@ public interface Configuration extends Serializable {
 	public WebWickerPageFactory getHomePageFactory();
 	
 	public List<WebWickerPageFactory> getTopPageFactories();
+	
+	public Settings getSettings();
 }

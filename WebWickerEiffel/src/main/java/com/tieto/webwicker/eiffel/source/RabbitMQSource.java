@@ -19,6 +19,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.tieto.webwicker.api.conf.Configuration;
+import com.tieto.webwicker.api.conf.Settings;
 import com.tieto.webwicker.api.persistence.PersistenceLayer;
 import com.tieto.webwicker.api.source.Source;
 import com.tieto.webwicker.api.source.SourceFactory;
@@ -28,29 +29,38 @@ import com.tieto.webwicker.eiffel.model.PatchSet;
 import com.tieto.webwicker.eiffel.model.WorkItem;
 
 public class RabbitMQSource implements Source {
-	private static final String EXCHANGE_NAME = "eiffel.poc";
+	private final String exchangeName;
+	private final String hostName;
+	private final int port;
 	private PersistenceLayer persistenceLayer = null;
 
 	public RabbitMQSource(final Configuration configuration) {
 		persistenceLayer = configuration.getPersistenceLayer();
+		
+		final Settings settings = configuration.getSettings();  
+		
+		hostName = settings.getSetting("Eiffel", "mb.host").orElse("localhost");
+		port = Integer.parseInt(settings.getSetting("Eiffel", "mb.port").orElse("5672"));
+		exchangeName = settings.getSetting("Eiffel", "mb.exchange").orElse("");
 	}
 
 	@Override
 	public void run() {
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setHost("localhost");
+			factory.setHost(hostName);
+			factory.setPort(port);
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
 	
 			try {
-				channel.exchangeDeclarePassive(EXCHANGE_NAME);
+				channel.exchangeDeclarePassive(exchangeName);
 			} catch(IOException e) {
-				channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+				channel.exchangeDeclare(exchangeName, "topic");
 			}
 			
 			String queueName = channel.queueDeclare().getQueue();
-			channel.queueBind(queueName, EXCHANGE_NAME, "#");
+			channel.queueBind(queueName, exchangeName, "#");
 	
 			Consumer consumer = new DefaultConsumer(channel) {
 				@Override
