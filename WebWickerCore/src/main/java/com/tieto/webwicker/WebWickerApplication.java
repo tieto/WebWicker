@@ -12,7 +12,7 @@ import com.tieto.webwicker.api.conf.Configuration;
 import com.tieto.webwicker.api.source.SourceFactory;
 import com.tieto.webwicker.api.web.WebWickerPageFactory;
 import com.tieto.webwicker.conf.ConfigurationImpl;
-import com.tieto.webwicker.persistence.InMemoryStorage;
+import com.tieto.webwicker.persistence.InMemoryStorage.InMemoryStorageFactory;
 import com.tieto.webwicker.web.ErrorPage.ErrorPageFactory;
 import com.tieto.webwicker.web.HomePage;
 import com.tieto.webwicker.web.StartPage.StartPageFactory;
@@ -47,10 +47,10 @@ public class WebWickerApplication extends WebApplication
 	{
 		super.init();
 		
-		configuration.setPersistanceLayer(new InMemoryStorage());
 		configuration.setMainPageClass(getHomePage());
 		configuration.setHomePageFactory(new StartPageFactory());
 		configuration.setErrorPageFactory(new ErrorPageFactory());
+		configuration.setPersistanceLayer(new InMemoryStorageFactory().create(configuration));
 
 		PluginManager manager = getPluginManager();
 		

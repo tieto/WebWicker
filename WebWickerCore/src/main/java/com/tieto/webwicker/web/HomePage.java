@@ -43,6 +43,7 @@ public class HomePage extends WebPage {
 	        listItems.add(list);
 		}
 		
+		add(new Label("title", configuration.getSettings().getSetting("WebWicker", "title").orElse("WebWicker")));
 		add(listItems);
 		add(configuration.getPageFactory(parameters.get("page").toString()).create("webwickerpanel", parameters, configuration));
 	}
