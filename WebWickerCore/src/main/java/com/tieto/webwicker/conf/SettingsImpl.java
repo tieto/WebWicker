@@ -10,9 +10,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.tieto.webwicker.api.conf.Settings;
+import com.tieto.webwicker.persistence.InMemoryDB;
 
 public class SettingsImpl implements Settings {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryDB.class);
 	private static final long serialVersionUID = -5200248773325425722L;
 	private final Map<String,Map<String,String>> settings;
 	
@@ -36,6 +41,7 @@ public class SettingsImpl implements Settings {
 					}
 				}
 			} catch(IOException e) {
+				log.error("Failed to load settingsfile '"+filepath+"': "+e.getMessage());
 			}			
 		}
 	}

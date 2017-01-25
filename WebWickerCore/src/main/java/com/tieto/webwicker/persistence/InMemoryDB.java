@@ -11,11 +11,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class InMemoryDB {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryDB.class);
 	private static InMemoryDB INSTANCE = null;
 	
 	private final Map<String,Map<String,JsonObject>> collections;
@@ -46,11 +50,11 @@ public class InMemoryDB {
 			outputData.add(collectionName, collection);
 		}
 		
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath));   
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
 			oos.writeObject(outputData.toString());
 			oos.close();
 		} catch (IOException e) {
+			log.error("Exception storing data: "+e.getMessage());
 		}
 	}
 	
@@ -68,7 +72,7 @@ public class InMemoryDB {
 					collections.put(collectionName, collection);
 				}
 			} catch (IOException | ClassNotFoundException e) {
-				System.err.println("Exception loading data: "+e.getMessage());
+				log.error("Exception loading data: "+e.getMessage());
 			}
 		}
 	}
