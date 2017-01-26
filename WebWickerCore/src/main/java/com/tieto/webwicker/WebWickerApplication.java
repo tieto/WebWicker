@@ -2,10 +2,14 @@ package com.tieto.webwicker;
 
 import java.util.List;
 
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ro.fortsoft.pf4j.PluginManager;
+import ro.fortsoft.pf4j.PluginWrapper;
 import ro.fortsoft.wicket.plugin.PluginManagerInitializer;
 
 import com.tieto.webwicker.api.conf.Configuration;
@@ -25,6 +29,8 @@ import com.tieto.webwicker.web.StartPage.StartPageFactory;
  */
 public class WebWickerApplication extends WebApplication
 {
+
+	Logger logger =  LoggerFactory.getLogger(WebWickerApplication.class);
 	private final ConfigurationImpl configuration = new ConfigurationImpl();
 	/**
 	 * @see org.apache.wicket.Application#getHomePage()
@@ -45,14 +51,18 @@ public class WebWickerApplication extends WebApplication
 	@Override
 	public void init()
 	{
-		super.init();
 		
+		super.init();
+		logger.info("starting.. init");
 		configuration.setPersistanceLayer(new InMemoryStorage());
 		configuration.setMainPageClass(getHomePage());
 		configuration.setHomePageFactory(new StartPageFactory());
 		configuration.setErrorPageFactory(new ErrorPageFactory());
 
 		PluginManager manager = getPluginManager();
+        
+		printPluginInformation(manager);
+		
 		
 		List<WebWickerPageFactory> pageFactories = manager.getExtensions(WebWickerPageFactory.class);
 		for(WebWickerPageFactory factory : pageFactories) {
@@ -63,7 +73,22 @@ public class WebWickerApplication extends WebApplication
 		for(SourceFactory factory : sourceFactories) {
 			Thread sourceThread = new Thread(factory.create(configuration));
 			sourceThread.start();
+			
 		}
+	}
+
+	private void printPluginInformation(PluginManager manager) {
+	
+		List<PluginWrapper> startedPlugins =  manager.getStartedPlugins();
+		for(PluginWrapper startedplugin : startedPlugins){
+			System.err.println(startedplugin.getDescriptor().getPluginId() + " " + startedplugin.getDescriptor().getVersion() + " started." );
+        }
+	
+		List<PluginWrapper> unresolvedPlugins =  manager.getUnresolvedPlugins();
+		for(PluginWrapper unresolvedplugin : unresolvedPlugins){
+        	System.err.println(unresolvedplugin.getDescriptor().getPluginId() + " " + unresolvedplugin.getDescriptor().getVersion() + " unresolved." );
+        }
+
 	}
 	
 	public Configuration getConfiguration() {
