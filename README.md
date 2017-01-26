@@ -69,3 +69,14 @@ WebWicker consists of a set of Open Source components matched together to provid
 * [Neo4J](https://neo4j.com/) - Graph-based database
 * [D3](https://d3js.org/) - JavaScript library for visualization
 * [Jetty](http://www.eclipse.org/jetty/) - Embedded web server
+
+##Using the framework
+
+General information on how to use the WebWicker framework (*work in progress*).
+
+###System properties
+
+The WebWicker framework uses Java system properties for pointing out the location of configuration files and plugins. The following parameters are used:
+
+* `pf4j.pluginsDir` - Points out the directory where the plugins are installed
+* `webwicker.settingsfile` - Points out the location of the configuration file (INI-file format, see the WebWicker.cfg.example file).

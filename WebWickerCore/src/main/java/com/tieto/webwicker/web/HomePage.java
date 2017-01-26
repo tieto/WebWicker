@@ -52,6 +52,7 @@ public class HomePage extends WebPage {
 	        listItems.add(list);
 		}
 		
+		add(new Label("title", configuration.getSettings().getSetting("WebWicker", "title").orElse("WebWicker")));
 		add(listItems);
 		add(configuration.getPageFactory(parameters.get("page").toString()).create("webwickerpanel", parameters, configuration));
 	   	
@@ -119,9 +120,7 @@ public class HomePage extends WebPage {
 		return page.equals(name);
 	}
 	
-	public PluginManager getPluginManager() {
-		return getMetaData(PluginManagerInitializer.PLUGIN_MANAGER_KEY);
-	}
+
 	
 	
 }

@@ -1,0 +1,11 @@
+[WebWicker]
+startPage=com.tieto.webwicker.userplugin.UserStartPage
+title=User specified title
+
+[InMemoryStorage]
+dumpFile=/home/user/WebWicker/data/data.db
+
+[Eiffel]
+mb.host=mb.host.com
+mb.port=5672
+mb.exchange=exchange1

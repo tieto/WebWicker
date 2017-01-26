@@ -2,11 +2,8 @@ package com.tieto.webwicker;
 
 import java.util.List;
 
-
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import ro.fortsoft.pf4j.PluginManager;
 import ro.fortsoft.pf4j.PluginWrapper;

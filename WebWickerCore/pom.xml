@@ -27,8 +27,6 @@
 		<!-- TODO project name  -->
 	<name>WebWicker</name>
 	<description></description>
-	
-	
 	<!--
 		<organization>
 			<name>company name</name>
@@ -68,7 +66,6 @@
 		
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 
-
     	<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -84,9 +81,12 @@
 			<version>${jetty9.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
- 	
-	</dependencies>
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>0.5.4</version>
+		</dependency>
+ 	</dependencies>
 	<build>
 		<resources>
 			<resource>
@@ -171,7 +171,5 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		
-	   
 	</repositories>
 	</project>

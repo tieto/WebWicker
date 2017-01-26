@@ -13,8 +13,13 @@ import com.tieto.webwicker.lib.json.ExtJsonElement;
 
 public class InMemoryStorage implements PersistenceLayer {
 	private static final long serialVersionUID = -3783750252261255831L;
+	private final String filePath;
 
-	public InMemoryStorage() {
+	public InMemoryStorage(Configuration configuration) {
+		filePath = configuration.getSettings().getSetting("InMemoryStorage", "dumpFile").orElse("");
+		if(!filePath.isEmpty()) {
+			InMemoryDB.getInstance().readFromDisk(filePath);
+		}
 	}
 
 	@Override
@@ -24,6 +29,9 @@ public class InMemoryStorage implements PersistenceLayer {
 			db.collections().put(collection, new LinkedHashMap<>());
 		}
 		db.collections().get(collection).put(id, object);
+		if(!filePath.isEmpty()) {
+			db.storeToDisk(filePath);
+		}
 	}
 	
 	@Override
@@ -73,7 +81,7 @@ public class InMemoryStorage implements PersistenceLayer {
 	public static class InMemoryStorageFactory extends PersistenceLayerFactory {
 		@Override
 		public PersistenceLayer create(Configuration configuration) {
-			return new InMemoryStorage();
+			return new InMemoryStorage(configuration);
 		}
 	}
 }
