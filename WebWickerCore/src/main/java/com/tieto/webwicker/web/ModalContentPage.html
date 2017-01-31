@@ -1,16 +1,22 @@
 <html>
 <head>
-<title>WebWicker - System information</title>
+<title>Plugin Info</title>
+
+<meta charset="utf-8" />
+
+<link rel="stylesheet" href="tablestyle3.css" type="text/css" media="screen"
+	title="Stylesheet" />
 </head>
 <body>
-<span wicket:id="passValueLabel">Current content of passValue variable.</span>
-<br><br>
+  	
+<table>
+	<tr>
+	   <th>Id</th><th>Version</th><th>Status</th>
+	</tr>
+	<tr wicket:id="rows">
+	   <td wicket:id="dataRow"></td>
+	</tr>
+</table>
 
-<li>
-<ul>WebWickerEiffel 0.0.1 loaded.</ul>
-
-<ul>WebWickerRadio 0.0.1 loaded.
-</ul>
-</li>
 </body>
 </html>
