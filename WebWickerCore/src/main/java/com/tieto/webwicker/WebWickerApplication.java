@@ -24,10 +24,9 @@ import com.tieto.webwicker.web.StartPage.StartPageFactory;
  * @see com.tieto.webwicker.Start#main(String[])
  */
 public class WebWickerApplication extends WebApplication {
+	
 	private final ConfigurationImpl configuration = new ConfigurationImpl();
 	private final SystemInformation sysinfo = new SystemInformation();
-	
-	public static final String testString = "test";
 
 	/**
 	 * @see org.apache.wicket.Application#getHomePage()
@@ -66,44 +65,37 @@ public class WebWickerApplication extends WebApplication {
 			Thread sourceThread = new Thread(factory.create(configuration));
 			sourceThread.start();
 		}
-		
+
 		fetchPluginInformation(manager);
 	}
 
 	private void fetchPluginInformation(PluginManager manager) {
-        
-        List<PluginWrapper> startedPlugins = manager.getStartedPlugins();
+
+		List<PluginWrapper> startedPlugins = manager.getStartedPlugins();
+		List<PluginWrapper> unresolvedPlugins = manager.getUnresolvedPlugins();
+		
 		for (PluginWrapper startedplugin : startedPlugins) {
+			sysinfo.addOnePlugin(new PluginInfo(startedplugin.getDescriptor().getPluginId(),
+					startedplugin.getDescriptor().getVersion().toString(), "started"));
 			System.err.println(startedplugin.getDescriptor().getPluginId() + " "
 					+ startedplugin.getDescriptor().getVersion() + " started.");
-	
-			sysinfo.setOnestartedPlugin(startedplugin.getDescriptor().getPluginId() + " "
-					+ startedplugin.getDescriptor().getVersion());
-			
-			sysinfo.addOnePlugin(new PluginInfo(startedplugin.getDescriptor().getPluginId(),startedplugin.getDescriptor().getVersion().toString(),"started"));
 			
 		}
 
-		List<PluginWrapper> unresolvedPlugins = manager.getUnresolvedPlugins();
 		for (PluginWrapper unresolvedplugin : unresolvedPlugins) {
+			
+			sysinfo.addOnePlugin(new PluginInfo(unresolvedplugin.getDescriptor().getPluginId(),
+					unresolvedplugin.getDescriptor().getVersion().toString(), "unresolved"));
 			System.err.println(unresolvedplugin.getDescriptor().getPluginId() + " "
 					+ unresolvedplugin.getDescriptor().getVersion() + " unresolved.");
 			
-			sysinfo.setOneunresolvedPlugin(unresolvedplugin.getDescriptor().getPluginId() + " "
-					+ unresolvedplugin.getDescriptor().getVersion());
-			
-			sysinfo.addOnePlugin(new PluginInfo(unresolvedplugin.getDescriptor().getPluginId(),unresolvedplugin.getDescriptor().getVersion().toString(),"unresolved"));
 		}
-		
-	}
-	
-	public SystemInformation getSystemInformation(){
-		
-		return  sysinfo ;
-	}
-	public String getPluginInformation() {
 
-		return "plugin_information_from_wicker_application";
+	}
+
+	public SystemInformation getSystemInformation() {
+
+		return sysinfo;
 	}
 
 	public Configuration getConfiguration() {

@@ -16,11 +16,11 @@ import org.apache.wicket.protocol.http.WebApplication;
 import com.tieto.webwicker.PluginInfo;
 import com.tieto.webwicker.WebWickerApplication;
 
-public class ModalContentPage extends WebPage {
+public class PluginPopUpPage extends WebPage {
 
 	private static final long serialVersionUID = 1L;
 
-	public ModalContentPage(final PageReference modalWindowPage, final ModalWindow window) {
+	public PluginPopUpPage(final PageReference modalWindowPage, final ModalWindow window) {
 
 		List<PluginInfo> plugins = new ArrayList<>();
 
