@@ -24,7 +24,7 @@ import com.tieto.webwicker.web.StartPage.StartPageFactory;
  * @see com.tieto.webwicker.Start#main(String[])
  */
 public class WebWickerApplication extends WebApplication {
-	
+
 	private final ConfigurationImpl configuration = new ConfigurationImpl();
 	private final SystemInformation sysinfo = new SystemInformation();
 
@@ -73,22 +73,22 @@ public class WebWickerApplication extends WebApplication {
 
 		List<PluginWrapper> startedPlugins = manager.getStartedPlugins();
 		List<PluginWrapper> unresolvedPlugins = manager.getUnresolvedPlugins();
-		
+
 		for (PluginWrapper startedplugin : startedPlugins) {
 			sysinfo.addOnePlugin(new PluginInfo(startedplugin.getDescriptor().getPluginId(),
 					startedplugin.getDescriptor().getVersion().toString(), "started"));
 			System.err.println(startedplugin.getDescriptor().getPluginId() + " "
 					+ startedplugin.getDescriptor().getVersion() + " started.");
-			
+
 		}
 
 		for (PluginWrapper unresolvedplugin : unresolvedPlugins) {
-			
+
 			sysinfo.addOnePlugin(new PluginInfo(unresolvedplugin.getDescriptor().getPluginId(),
 					unresolvedplugin.getDescriptor().getVersion().toString(), "unresolved"));
 			System.err.println(unresolvedplugin.getDescriptor().getPluginId() + " "
 					+ unresolvedplugin.getDescriptor().getVersion() + " unresolved.");
-			
+
 		}
 
 	}

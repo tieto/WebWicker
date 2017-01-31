@@ -35,7 +35,7 @@ public class PluginPopUpPage extends WebPage {
 
 			@Override
 			protected void populateItem(Item<PluginInfo> item) {
-				
+
 				PluginInfo plugin = item.getModelObject();
 				RepeatingView repeatingView = new RepeatingView("dataRow");
 
@@ -47,7 +47,7 @@ public class PluginPopUpPage extends WebPage {
 			}
 		};
 		add(dataView);
-	
+
 	}
 
 }
