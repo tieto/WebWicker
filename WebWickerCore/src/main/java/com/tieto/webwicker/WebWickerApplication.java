@@ -94,7 +94,6 @@ public class WebWickerApplication extends WebApplication {
 					+ unresolvedplugin.getDescriptor().getVersion() + " unresolved.");
 
 		}
-
 	}
 
 	public SystemInformation getSystemInformation() {

@@ -181,17 +181,17 @@ public class CommitPage extends WebWickerPage {
         //test
 		
 		
-		if(tmpverified.contains("FAILURE")) {
+		if(tmpverified.equals("FAILURE")) {
 			verifiedNode.add(new AttributeModifier("fill", "#FFBBBB"));
-		} else if(tmpverified.contains("SUCCESS")) {
+		} else if(tmpverified.equals("SUCCESS")) {
 			verifiedNode.add(new AttributeModifier("fill", "#BBFFBB"));
 		} else {
 			verifiedNode.add(new AttributeModifier("fill", "#BBBBBB"));
 		}
 		
-		if(codeReview.startsWith("FAILURE")) {
+		if(codeReview.equals("FAILURE")) {
 			codeReviewNode.add(new AttributeModifier("fill", "#FFBBBB"));
-		} else if(codeReview.startsWith("SUCCESS")) {
+		} else if(codeReview.equals("SUCCESS")) {
 			codeReviewNode.add(new AttributeModifier("fill", "#BBFFBB"));
 		} else {
 			codeReviewNode.add(new AttributeModifier("fill", "#BBBBBB"));
