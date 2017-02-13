@@ -1,5 +1,6 @@
 package com.tieto.webwicker.eiffel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
@@ -9,9 +10,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class SendMessages {
-	//public static final String REMREM_PUBLISH_CLI_PATH = System.getProperty("user.home")+File.separator+"eiffel-remrem-publish.war";
-    public static final String REMREM_PUBLISH_CLI_PATH = "C:\\Env\\WebWicker\\deps\\remrem-publish-0.1.7.war";
-
+	public static final String REMREM_PUBLISH_CLI_PATH = System.getProperty("user.home")+File.separator+"eiffel-remrem-publish.war";
+    
 	public static long time = new Date().getTime() - 100000L;
 
 	public static void main(String[] args) throws IOException {

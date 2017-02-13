@@ -41,7 +41,7 @@ public class RabbitMQSource implements Source {
 
 		hostName = settings.getSetting("Eiffel", "mb.host").orElse("localhost");
 		port = Integer.parseInt(settings.getSetting("Eiffel", "mb.port").orElse("5672"));
-		exchangeName = settings.getSetting("Eiffel", "mb.exchange").orElse("eiffel.poc");
+		exchangeName = settings.getSetting("Eiffel", "mb.exchange").orElse("");
 	}
 
 	@Override
