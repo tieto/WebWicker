@@ -28,8 +28,8 @@ import com.tieto.webwicker.eiffel.provider.CommitProvider;
 
 public class CommitsPage extends WebWickerPage {
 	private static final long serialVersionUID = 1386775624549749182L;
-	private static final List<String> approved = Arrays.asList(new String[]{"+2"});
-	private static final List<String> verified = Arrays.asList(new String[]{"+1"});
+	private static final List<String> approved = Arrays.asList(new String[]{"SUCCESS"});
+	private static final List<String> verified = Arrays.asList(new String[]{"SUCCESS"});
 
 	public static final int ORDER = 100;
 

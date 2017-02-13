@@ -36,12 +36,12 @@ public class RabbitMQSource implements Source {
 
 	public RabbitMQSource(final Configuration configuration) {
 		persistenceLayer = configuration.getPersistenceLayer();
-		
-		final Settings settings = configuration.getSettings();  
-		
+
+		final Settings settings = configuration.getSettings();
+
 		hostName = settings.getSetting("Eiffel", "mb.host").orElse("localhost");
 		port = Integer.parseInt(settings.getSetting("Eiffel", "mb.port").orElse("5672"));
-		exchangeName = settings.getSetting("Eiffel", "mb.exchange").orElse("");
+		exchangeName = settings.getSetting("Eiffel", "mb.exchange").orElse("eiffel.poc");
 	}
 
 	@Override
@@ -52,27 +52,27 @@ public class RabbitMQSource implements Source {
 			factory.setPort(port);
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
-	
+
 			try {
 				channel.exchangeDeclarePassive(exchangeName);
-			} catch(IOException e) {
+			} catch (IOException e) {
 				channel.exchangeDeclare(exchangeName, "topic");
 			}
-			
+
 			String queueName = channel.queueDeclare().getQueue();
 			channel.queueBind(queueName, exchangeName, "#");
-	
+
 			Consumer consumer = new DefaultConsumer(channel) {
 				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope,
-						AMQP.BasicProperties properties, byte[] body) throws IOException {
+				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+						byte[] body) throws IOException {
 					String message = new String(body, "UTF-8");
 					System.out.println(" [x] Received '" + message + "'");
 					handleMessage(message);
 				}
 			};
 			channel.basicConsume(queueName, true, consumer);
-		} catch(TimeoutException | IOException e) {
+		} catch (TimeoutException | IOException e) {
 			System.err.println("Connection to Message Bus failed. RabbitMQSource is disabled...");
 		}
 	}
@@ -80,29 +80,30 @@ public class RabbitMQSource implements Source {
 	private void handleMessage(final String message) {
 		try {
 			final ExtJsonElement jsonMsg = new ExtJsonElement(message);
-			final String msgType = jsonMsg.getString("","meta","type");
-			
-			if("EiffelSourceChangeCreatedEvent".equals(msgType)) {
+			final String msgType = jsonMsg.getString("", "meta", "type");
+
+			if ("EiffelSourceChangeCreatedEvent".equals(msgType)) {
 				handleNewPatchset(jsonMsg);
-			} else if("EiffelSourceChangeSubmittedEvent".equals(msgType)) {
+			} else if ("EiffelSourceChangeSubmittedEvent".equals(msgType)) {
 				handleMerge(jsonMsg);
-			} else if("EiffelConfidenceLevelModifiedEvent".equals(msgType)) {
+			} else if ("EiffelConfidenceLevelModifiedEvent".equals(msgType)) {
 				handleConfidenceLevel(jsonMsg);
 			}
-		} catch(JsonParseException | IllegalStateException e) {
+		} catch (JsonParseException | IllegalStateException e) {
 			// Ignore the message if not JSON compliant
 		}
 	}
 
 	private void handleNewPatchset(ExtJsonElement jsonMsg) {
-		String changeId = jsonMsg.getString("","data","change","id");
+		String changeId = jsonMsg.getString("", "data", "change", "id");
 		Long epochTime = jsonMsg.getLong(0, "meta", "time");
-		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int)(epochTime % 1000) * 1000000, ZoneOffset.UTC);
+		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int) (epochTime % 1000) * 1000000,
+				ZoneOffset.UTC);
 		PatchSet ps = new PatchSet(jsonMsg.getString("", "meta", "id"), timeStamp.toString());
 		JsonObject jsonCommit = persistenceLayer.fetchOneWithId("commits", changeId);
 		Commit commit;
-		
-		if(jsonCommit != null) {
+
+		if (jsonCommit != null) {
 			commit = new Commit();
 			commit.fromJson(jsonCommit);
 		} else {
@@ -115,12 +116,12 @@ public class RabbitMQSource implements Source {
 		}
 
 		commit.clearWorkItems();
-		for(JsonElement issue : jsonMsg.getJsonArray("data", "issues")) {
+		for (JsonElement issue : jsonMsg.getJsonArray("data", "issues")) {
 			commit.addWorkItem(new WorkItem(issue.getAsJsonObject().get("id").getAsString(), ""));
 		}
 
 		commit.addPatchSet(ps);
-		
+
 		persistenceLayer.store("commits", commit.toJson(), changeId);
 	}
 
@@ -128,22 +129,23 @@ public class RabbitMQSource implements Source {
 		JsonArray links = jsonMsg.getJsonArray("links");
 		String patchSetId = "";
 		Long epochTime = jsonMsg.getLong(0, "meta", "time");
-		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int)(epochTime % 1000) * 1000000, ZoneOffset.UTC);
+		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int) (epochTime % 1000) * 1000000,
+				ZoneOffset.UTC);
 
-		for(JsonElement l : links) {
+		for (JsonElement l : links) {
 			ExtJsonElement link = new ExtJsonElement(l);
-			
-			if("CHANGE".equals(link.getString("", "type"))) {
+
+			if ("CHANGE".equals(link.getString("", "type"))) {
 				patchSetId = link.getString("", "target");
 				break;
 			}
 		}
-		
-		if(!patchSetId.isEmpty()) {
-			JsonObject json = persistenceLayer.fetchOne("commits", "patchSets[*].patchSetId="+patchSetId);
-			
-			if(json != null) {
-				Commit commit = new Commit(); 
+
+		if (!patchSetId.isEmpty()) {
+			JsonObject json = persistenceLayer.fetchOne("commits", "patchSets[*].patchSetId=" + patchSetId);
+
+			if (json != null) {
+				Commit commit = new Commit();
 				commit.fromJson(json);
 				commit.getPatchSet(patchSetId).setMerged("Yes");
 				commit.getPatchSet(patchSetId).setUpdated(timeStamp.toString());
@@ -153,32 +155,35 @@ public class RabbitMQSource implements Source {
 	}
 
 	private void handleConfidenceLevel(ExtJsonElement jsonMsg) {
+
 		JsonArray links = jsonMsg.getJsonArray("links");
 		String patchSetId = "";
 		Long epochTime = jsonMsg.getLong(0, "meta", "time");
-		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int)(epochTime % 1000) * 1000000, ZoneOffset.UTC);
-		
-		for(JsonElement l : links) {
+		LocalDateTime timeStamp = LocalDateTime.ofEpochSecond(epochTime / 1000, (int) (epochTime % 1000) * 1000000,
+				ZoneOffset.UTC);
+
+		for (JsonElement l : links) {
 			ExtJsonElement link = new ExtJsonElement(l);
-			if("SUBJECT".equals(link.getString("", "type"))) {
+			if ("SUBJECT".equals(link.getString("", "type"))) {
 				patchSetId = link.getString("", "target");
 				break;
 			}
 		}
-		
+
 		String clName = jsonMsg.getString("", "data", "name");
 		String clValue = jsonMsg.getString("", "data", "value");
-		
-		if(!patchSetId.isEmpty() && ("VERIFIED".equals(clName) || "CODE_REVIEW".equals(clName))) {
-			JsonObject json = persistenceLayer.fetchOne("commits", "patchSets[*].patchSetId="+patchSetId);
-		
-			if(json != null) {
-				Commit commit = new Commit(); 
+
+		if (!patchSetId.isEmpty() && ("VERIFIED".equals(clName) || "CODE_REVIEW".equals(clName))) {
+			JsonObject json = persistenceLayer.fetchOne("commits", "patchSets[*].patchSetId=" + patchSetId);
+
+			if (json != null) {
+				Commit commit = new Commit();
 				commit.fromJson(json);
-			
-				if("VERIFIED".equals(clName)) {
+
+				if ("VERIFIED".equals(clName)) {
+
 					commit.getPatchSet(patchSetId).setVerified(clValue);
-				} else if("CODE_REVIEW".equals(clName)) {
+				} else if ("CODE_REVIEW".equals(clName)) {
 					commit.getPatchSet(patchSetId).setCodeReview(clValue);
 				}
 				commit.getPatchSet(patchSetId).setUpdated(timeStamp.toString());
@@ -186,7 +191,7 @@ public class RabbitMQSource implements Source {
 			}
 		}
 	}
-	
+
 	@Extension
 	public static class RabbitMQSourceFactory extends SourceFactory {
 		@Override
