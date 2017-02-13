@@ -7,15 +7,22 @@ import org.apache.wicket.StyleAttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.head.CssReferenceHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
+
 import com.tieto.webwicker.WebWickerApplication;
 import com.tieto.webwicker.api.conf.Configuration;
 import com.tieto.webwicker.api.web.WebWickerPageFactory;
+
+import de.agilecoders.wicket.core.Bootstrap;
 
 public class HomePage extends WebPage {
 
@@ -24,6 +31,21 @@ public class HomePage extends WebPage {
 	private List<WebWickerPageFactory> subPages;
 
 	public static final int ORDER = 0;
+	
+	
+	@Override
+	public void renderHead(IHeaderResponse response) {
+		super.renderHead(response);
+
+		
+
+		// add base css to page
+		response.render(CssReferenceHeaderItem.forReference(new CssResourceReference(
+				HomePage.class, "custom.css")));
+
+		Bootstrap.renderHead(response); 
+		
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public HomePage(final PageParameters parameters) {
