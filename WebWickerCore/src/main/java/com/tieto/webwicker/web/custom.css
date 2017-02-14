@@ -17,29 +17,35 @@
 	font-size: 36pt;
 }
 
-
-.table-striped{
+.table-striped {
 	width: 100% !important;
 }
-.navbar-inverse{
+
+.container-fluid {
 	background-color: #092E67 !important;
-	padding-up: 0px !important;
-	margin: 0px !important;
-	top: 0 !important;
+	color: white !important;
+}
+
+.nav navbar-nav {
+	color: white !important;
 }
 
 .row {
 	margin-top: 0px !important;
 }
 
-.p {
-	padding-left: 20px;
+
+#hd li a:hover {
+	background-color: #092E67;
+}
+#hd .active {
+	background-color: #092E67;
+	color: #ffff00;
 }
 
-.list-inline>li {
-	margin-left: 20px;
-	font-size: 20px;
-	
+.col-sm-9 {
+	margin-top: 10px !important;
+	padding-left: 10px !important;
 }
 
 .row extra-bottom-padding {

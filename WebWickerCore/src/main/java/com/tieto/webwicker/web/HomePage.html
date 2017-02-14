@@ -3,15 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <title>WebWicker</title>
-
-	
 </head>
 <body>
 
 	<div class="container">
 		<div class="jumbotron">
 
-			<div style="float: right; margin-right: 15px; margin-top: 15px;">
+			<div class="pull-right">
+
 				<div wicket:id="modal"></div>
 				<a wicket:id="showModalLink"> <img border="1" alt="Plugins"
 					src="plugin.png">
@@ -22,23 +21,22 @@
 
 			<div id="menu"></div>
 		</div>
-		<div class="row">
-			<div class="navbar-inverse">
-				<ul class ="list-inline">
+		<div class="row" id ="hd">
+
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
 
 					<li wicket:id="listItems"><a wicket:id="Link"><span
 							wicket:id="Text"></span></a></li>
-
 				</ul>
 			</div>
 		</div>
-	    
-	     <div class="span12">
-		
-               <div wicket:id="webwickerpanel"></div>           
-         </div>
-          
-	
+
+		<div class="col-sm-9">
+
+			<div wicket:id="webwickerpanel"></div>
+		</div>
+
 	</div>
 </body>
 </html>

@@ -38,7 +38,7 @@ public class CommitPage extends WebWickerPage {
 	private static final List<String> partlyApproved = Arrays.asList(new String[]{"INCONCLUSIVE"});
 	private static final List<String> notApproved = Arrays.asList(new String[]{"FAILURE"});
 	private static final List<String> verified = Arrays.asList(new String[]{"SUCCESS"});
-	private static final List<String> notVerified = Arrays.asList(new String[]{"INCONCLUSIVE"});
+	private static final List<String> notVerified = Arrays.asList(new String[]{"INCONCLUSIVE,FAILURE"});
 	
 	private final String commitId;
 	private final CommitProvider commitProvider;
