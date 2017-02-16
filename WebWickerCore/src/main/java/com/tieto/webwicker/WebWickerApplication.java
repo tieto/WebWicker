@@ -17,6 +17,8 @@ import com.tieto.webwicker.web.ErrorPage.ErrorPageFactory;
 import com.tieto.webwicker.web.HomePage;
 import com.tieto.webwicker.web.StartPage.StartPageFactory;
 
+import de.agilecoders.wicket.core.Bootstrap;
+
 /**
  * Application object for your web application. If you want to run this
  * application without deploying, run the Start class.
@@ -55,6 +57,8 @@ public class WebWickerApplication extends WebApplication {
 
 		PluginManager manager = getPluginManager();
 
+		Bootstrap.install(this);
+
 		List<WebWickerPageFactory> pageFactories = manager.getExtensions(WebWickerPageFactory.class);
 		for (WebWickerPageFactory factory : pageFactories) {
 			configuration.setPageFactory(factory.getPageClassName(), factory);
@@ -90,7 +94,6 @@ public class WebWickerApplication extends WebApplication {
 					+ unresolvedplugin.getDescriptor().getVersion() + " unresolved.");
 
 		}
-
 	}
 
 	public SystemInformation getSystemInformation() {

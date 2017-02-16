@@ -3,33 +3,40 @@
 <head>
 <meta charset="utf-8" />
 <title>WebWicker</title>
-<link rel="stylesheet" href="style.css" type="text/css" media="screen"
-	title="Stylesheet" />
 </head>
 <body>
 
-	<div style="float: right; margin-right: 15px; margin-top: 15px;">
-		<div wicket:id="modal"></div>
-		<a wicket:id="showModalLink"> <img border="1" alt="Plugins"
-			src="plugin.png">
-		</a>
+	<div class="container">
+		<div class="jumbotron">
+
+			<div class="pull-right">
+
+				<div wicket:id="modal"></div>
+				<a wicket:id="showModalLink"> <img border="1" alt="Plugins"
+					src="plugin.png">
+				</a>
+			</div>
+
+			<h1 wicket:id="title">WebWicker</h1>
+
+			<div id="menu"></div>
+		</div>
+		<div class="row" id ="hd">
+
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+
+					<li wicket:id="listItems"><a wicket:id="Link"><span
+							wicket:id="Text"></span></a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="col-sm-9">
+
+			<div wicket:id="webwickerpanel"></div>
+		</div>
+
 	</div>
-
-	<div id="hd">
-		<h1 wicket:id="title">WebWicker</h1>
-
-		<div id="menu"></div>
-
-		<ul>
-			<li wicket:id="listItems"><a wicket:id="Link"><span
-					wicket:id="Text"></span></a></li>
-		</ul>
-	</div>
-
-	<div id="bd">
-		<div wicket:id="webwickerpanel"></div>
-	</div>
-
-
 </body>
 </html>

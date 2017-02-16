@@ -33,12 +33,12 @@ import com.tieto.webwicker.eiffel.model.WorkItem;
 import com.tieto.webwicker.eiffel.provider.CommitProvider;
 
 public class CommitPage extends WebWickerPage {
-	private static final long serialVersionUID = -1879929547602037385L;
-	private static final List<String> approved = Arrays.asList(new String[]{"+2"});
-	private static final List<String> partlyApproved = Arrays.asList(new String[]{"+1"});
-	private static final List<String> notApproved = Arrays.asList(new String[]{"-1","-2"});
-	private static final List<String> verified = Arrays.asList(new String[]{"+1"});
-	private static final List<String> notVerified = Arrays.asList(new String[]{"-1"});
+	
+	private static final List<String> approved = Arrays.asList(new String[]{"SUCCESS"});
+	private static final List<String> partlyApproved = Arrays.asList(new String[]{"INCONCLUSIVE"});
+	private static final List<String> notApproved = Arrays.asList(new String[]{"FAILURE"});
+	private static final List<String> verified = Arrays.asList(new String[]{"SUCCESS"});
+	private static final List<String> notVerified = Arrays.asList(new String[]{"INCONCLUSIVE,FAILURE"});
 	
 	private final String commitId;
 	private final CommitProvider commitProvider;
@@ -174,21 +174,24 @@ public class CommitPage extends WebWickerPage {
 	}
 	
 	private void updateNodeColors() {
-		final String verified = model.getObject().getLatestPatchSet().getVerified();
+	
+		final String tmpverified = model.getObject().getLatestPatchSet().getVerified();
 		final String codeReview = model.getObject().getLatestPatchSet().getCodeReviewed();
 		final String merged = model.getObject().getLatestPatchSet().getMerged();
-
-		if(verified.startsWith("-")) {
+        //test
+		
+		
+		if(tmpverified.equals("FAILURE")) {
 			verifiedNode.add(new AttributeModifier("fill", "#FFBBBB"));
-		} else if(verified.startsWith("+")) {
+		} else if(tmpverified.equals("SUCCESS")) {
 			verifiedNode.add(new AttributeModifier("fill", "#BBFFBB"));
 		} else {
 			verifiedNode.add(new AttributeModifier("fill", "#BBBBBB"));
 		}
 		
-		if(codeReview.startsWith("-")) {
+		if(codeReview.equals("FAILURE")) {
 			codeReviewNode.add(new AttributeModifier("fill", "#FFBBBB"));
-		} else if(codeReview.startsWith("+")) {
+		} else if(codeReview.equals("SUCCESS")) {
 			codeReviewNode.add(new AttributeModifier("fill", "#BBFFBB"));
 		} else {
 			codeReviewNode.add(new AttributeModifier("fill", "#BBBBBB"));

@@ -49,14 +49,13 @@
 		<wtp.version>none</wtp.version>
         <plugin.id>WebWickerEiffel</plugin.id>
         <plugin.class>com.tieto.webwicker.eiffel.WebWickerEiffel</plugin.class>
-        <plugin.version>0.0.1</plugin.version>
+        <plugin.version>0.0.2</plugin.version>
         <plugin.provider>Tieto</plugin.provider>
         <plugin.dependencies />
 	</properties>
 	<dependencies>
 		<!--  WICKET DEPENDENCIES -->
 		<!-- OPTIONAL DEPENDENCY -->
-
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

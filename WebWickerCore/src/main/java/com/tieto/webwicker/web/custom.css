@@ -1,0 +1,56 @@
+.container {
+	width: 100% !important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+
+.jumbotron {
+	width: 100%;
+	height: 20%;
+	background-color: #6493D2 !important;
+	border-radius: 0 !important;
+	margin-bottom: 0px !important
+}
+
+.jumbotron h1 {
+	color: white !important;
+	font-size: 36pt;
+}
+
+.table-striped {
+	width: 100% !important;
+}
+
+.container-fluid {
+	background-color: #092E67 !important;
+	color: white !important;
+}
+
+.nav navbar-nav {
+	color: white !important;
+}
+
+.row {
+	margin-top: 0px !important;
+}
+
+
+#hd li a:hover {
+	background-color: #092E67;
+}
+#hd .active {
+	background-color: #092E67;
+	color: #ffff00;
+}
+
+.col-sm-9 {
+	margin-top: 10px !important;
+	padding-left: 10px !important;
+}
+
+.row extra-bottom-padding {
+	margin-left: 20px !important;
+	padding-left: 10px !important;
+	padding-right: 0px !important;
+}
+}
